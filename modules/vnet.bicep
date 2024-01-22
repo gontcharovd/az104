@@ -1,12 +1,12 @@
-param name string 
+param vnetName string 
 param addressPrefixes string 
 param location string
 param subnetNames array
 param subnetPrefixes array
 
 
-resource vnet1 'microsoft.network/virtualnetworks@2021-05-01' = {
-  name: name
+resource vnet 'microsoft.network/virtualnetworks@2021-05-01' = {
+  name: vnetName
   location: location
   properties: {
     addressSpace: {
@@ -24,4 +24,3 @@ resource vnet1 'microsoft.network/virtualnetworks@2021-05-01' = {
     ]
   }
 }
-
