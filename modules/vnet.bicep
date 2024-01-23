@@ -4,7 +4,6 @@ param location string
 param subnetNames array
 param subnetPrefixes array
 
-
 resource vnet 'microsoft.network/virtualnetworks@2021-05-01' = {
   name: vnetName
   location: location
@@ -24,3 +23,5 @@ resource vnet 'microsoft.network/virtualnetworks@2021-05-01' = {
     ]
   }
 }
+
+output vnetId string = vnet.id
