@@ -1,12 +1,12 @@
 targetScope = 'subscription'
 
 param location string = 'westeurope'
-param vnet1Name string = 'az104-06-vnet1'
+param vnet1Name string = 'az104-06-vnet01'
 param vnet2Name string = 'az104-06-vnet2'
 param vnet3Name string = 'az104-06-vnet3'
-param vnet1Address string = '10.60.0.0/16'
-param vnet2Address string = '10.62.0.0/16'
-param vnet3Address string = '10.63.0.0/16'
+param vnet1Address string = '10.60.0.0/22'
+param vnet2Address string = '10.62.0.0/22'
+param vnet3Address string = '10.63.0.0/22'
 
 resource rg1 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'az104-06-rg1'
@@ -28,7 +28,7 @@ resource rg4 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: location
 }
 
-module vnet1 './modules/vnet.bicep' = {
+module vnet1 './modules/network/vnet.bicep' = {
   name: 'vnet1'
   scope: rg1
   params: {
@@ -40,7 +40,7 @@ module vnet1 './modules/vnet.bicep' = {
   }
 }
 
-module vnet2 './modules/vnet.bicep' = {
+module vnet2 './modules/network/vnet.bicep' = {
   name: 'vnet2'
   scope: rg2
   params: {
@@ -52,7 +52,7 @@ module vnet2 './modules/vnet.bicep' = {
   }
 }
 
-module vnet3 './modules/vnet.bicep' = {
+module vnet3 './modules/network/vnet.bicep' = {
   name: 'vnet3'
   scope: rg3
   params: {
@@ -64,7 +64,7 @@ module vnet3 './modules/vnet.bicep' = {
   }
 }
 
-module peer12 './modules/peering.bicep' = {
+module peer12 './modules/network/peering.bicep' = {
   name: 'peer12'
   scope: rg1
   params: {
@@ -74,7 +74,7 @@ module peer12 './modules/peering.bicep' = {
   }
 }
 
-module peer21 './modules/peering.bicep' = {
+module peer21 './modules/network/peering.bicep' = {
   name: 'peer21'
   scope: rg2
   params: {
@@ -84,7 +84,7 @@ module peer21 './modules/peering.bicep' = {
   }
 }
 
-module peer13 './modules/peering.bicep' = {
+module peer13 './modules/network/peering.bicep' = {
   name: 'peer13'
   scope: rg1
   params: {
@@ -94,7 +94,7 @@ module peer13 './modules/peering.bicep' = {
   }
 }
 
-module peer31 './modules/peering.bicep' = {
+module peer31 './modules/network/peering.bicep' = {
   name: 'peer31'
   scope: rg3
   params: {
