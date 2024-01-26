@@ -53,7 +53,7 @@ var subnetRefs = [
 var computeApiVersion = '2018-06-01'
 var networkApiVersion = '2018-08-01'
 
-resource vm 'Microsoft.Compute/virtualMachines@[variables(\'computeApiVersion\')]' = [for i in range(0, vmCount): {
+resource vm 'Microsoft.Compute/virtualMachines@2018-06-01' = [for i in range(0, vmCount): {
   name: concat(vmName, i)
   location: resourceGroup().location
   properties: {
@@ -62,7 +62,7 @@ resource vm 'Microsoft.Compute/virtualMachines@[variables(\'computeApiVersion\')
       adminUsername: adminUsername
       adminPassword: adminPassword
       windowsConfiguration: {
-        provisionVmAgent: 'true'
+        provisionVMAgent: 'true'
       }
     }
     hardwareProfile: {
@@ -92,11 +92,11 @@ resource vm 'Microsoft.Compute/virtualMachines@[variables(\'computeApiVersion\')
     }
   }
   dependsOn: [
-    concat(nic_var, i)
+    reference(concat(nic_var, i))
   ]
 }]
 
-resource vmName_vmExtension 'Microsoft.Compute/virtualMachines/extensions@[variables(\'computeApiVersion\')]' = [for i in range(0, vmCount): {
+resource vmName_vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = [for i in range(0, vmCount): {
   name: '${vmName}${i}/${vmExtensionName}'
   location: resourceGroup().location
   properties: {
@@ -113,7 +113,7 @@ resource vmName_vmExtension 'Microsoft.Compute/virtualMachines/extensions@[varia
   ]
 }]
 
-resource virtualNetworkNamestbc 'Microsoft.Network/virtualNetworks@[variables(\'networkApiVersion\')]' = [for (item, i) in virtualNetworkNamestbc_var: {
+resource virtualNetworkNamestbc 'Microsoft.Network/virtualNetworks@2018-08-01' = [for (item, i) in virtualNetworkNamestbc_var: {
   name: item
   location: resourceGroup().location
   properties: {
@@ -133,7 +133,7 @@ resource virtualNetworkNamestbc 'Microsoft.Network/virtualNetworks@[variables(\'
   }
 }]
 
-resource az104_06_vnet01_subnet1 'Microsoft.Network/virtualNetworks/subnets@[variables(\'networkApiVersion\')]' = {
+resource az104_06_vnet01_subnet1 'Microsoft.Network/virtualNetworks/subnets@2018-08-01' = {
   location: resourceGroup().location
   name: 'az104-06-vnet01/subnet1'
   properties: {
@@ -144,7 +144,7 @@ resource az104_06_vnet01_subnet1 'Microsoft.Network/virtualNetworks/subnets@[var
   ]
 }
 
-resource nic 'Microsoft.Network/networkInterfaces@[variables(\'networkApiVersion\')]' = [for i in range(0, vmCount): {
+resource nic 'Microsoft.Network/networkInterfaces@2018-08-01' = [for i in range(0, vmCount): {
   name: concat(nic_var, i)
   location: resourceGroup().location
   properties: {
@@ -169,7 +169,7 @@ resource nic 'Microsoft.Network/networkInterfaces@[variables(\'networkApiVersion
   ]
 }]
 
-resource nsgNamestbc 'Microsoft.Network/networkSecurityGroups@[variables(\'networkApiVersion\')]' = [for i in range(0, 3): {
+resource nsgNamestbc 'Microsoft.Network/networkSecurityGroups@2018-08-01' = [for i in range(0, 3): {
   name: nsgNamestbc_var[i]
   location: resourceGroup().location
   properties: {

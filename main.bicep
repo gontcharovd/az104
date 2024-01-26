@@ -7,6 +7,12 @@ param vnet3Name string = 'az104-06-vnet3'
 param vnet1Address string = '10.60.0.0/22'
 param vnet2Address string = '10.62.0.0/22'
 param vnet3Address string = '10.63.0.0/22'
+param vm2Name string = 'az104-06-vm2'
+param vm2NicName string = 'az104-06-vm2-nic'
+param vm2NsgName string = 'az104-06-vm2-nsg'
+param adminUsername string = 'denis'
+@secure()
+param adminPassword string = 'AZ104ADMINPASSOWRD'
 
 resource rg1 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'az104-06-rg1'
@@ -101,5 +107,20 @@ module peer31 './modules/network/peering.bicep' = {
     sourceVnetName: vnet3Name
     destinationVnetName: vnet1Name
     destinationVnetId: vnet1.outputs.vnetId
+  }
+}
+
+module vm2 './modules/compute/vm.bicep' = {
+  name: 'vm2'
+  scope: rg2
+  params: {
+    location: location
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+    nicName: vm2NicName
+    nsgName: vm2NsgName
+    virtualNetworkName: vnet2Name
+    subnetName: 'subnet0'
+    vmName: vm2Name
   }
 }
