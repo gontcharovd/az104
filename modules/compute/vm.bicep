@@ -4,7 +4,8 @@ param nsgName string
 param subnetName string
 param virtualNetworkName string
 param vmName string
-param vmSize string = 'Standard_B1s'
+param vmSize string = 'Standard_B1ms'
+param enableIpForwarding bool = false
 param adminUsername string
 @secure()
 param adminPassword string
@@ -69,9 +70,10 @@ resource nic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
   name: nicName
   location: location
   properties: {
+    enableIPForwarding: enableIpForwarding
     ipConfigurations: [
       {
-        name: 'ipconfig1'
+        name: 'ipconfig'
         properties: {
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)

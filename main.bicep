@@ -131,6 +131,7 @@ module vm0 './modules/compute/vm.bicep' = {
     virtualNetworkName: vnet1Name
     subnetName: 'subnet0'
     vmName: vm0Name
+    enableIpForwarding: true
   }
 }
 
