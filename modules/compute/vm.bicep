@@ -4,7 +4,7 @@ param nsgName string
 param subnetName string
 param virtualNetworkName string
 param vmName string
-param vmSize string = 'Standard_D2s_v3'
+param vmSize string = 'Standard_B1s'
 param adminUsername string
 @secure()
 param adminPassword string
@@ -18,7 +18,7 @@ resource vm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
       adminUsername: adminUsername
       adminPassword: adminPassword
       windowsConfiguration: {
-        provisionVMAgent: 'true'
+        provisionVMAgent: true
       }
     }
     hardwareProfile: {
@@ -42,18 +42,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
           properties: {
             primary: true
           }
-          id: resourceId('Microsoft.Network/networkInterfaces', nicName)
+          id: nic.id
         }
       ]
     }
   }
-  dependsOn: [
-    reference(nicName)
-  ]
-}]
+}
+
 
 resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = {
-  name: '${vmName}/customScriptExtension'
+  parent: vm
+  name: 'customScriptExtension'
   location: location
   properties: {
     publisher: 'Microsoft.Compute'
@@ -64,10 +63,7 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' =
       commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
     }
   }
-  dependsOn: [
-    'Microsoft.Compute/virtualMachines/${vmName}'
-  ]
-}]
+}
 
 resource nic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
   name: nicName
@@ -85,14 +81,10 @@ resource nic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
       }
     ]
     networkSecurityGroup: {
-      id: resourceId('Microsoft.Network/networkSecurityGroups', nsgName)
+      id: nsg.id
     }
   }
-  dependsOn: [
-    nsgName
-   'Microsoft.Network/virtualNetworks/virtualNetworkName'
-  ]
-}]
+}
 
 resource nsg 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
   name: nsgName
@@ -127,4 +119,4 @@ resource nsg 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
       }
     ]
   }
-}]
+}

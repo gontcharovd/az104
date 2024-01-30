@@ -7,12 +7,21 @@ param vnet3Name string = 'az104-06-vnet3'
 param vnet1Address string = '10.60.0.0/22'
 param vnet2Address string = '10.62.0.0/22'
 param vnet3Address string = '10.63.0.0/22'
+param vm0Name string = 'az104-06-vm0'
+param vm0NicName string = 'az104-06-vm0-nic'
+param vm0NsgName string = 'az104-06-vm0-nsg'
+param vm1Name string = 'az104-06-vm1'
+param vm1NicName string = 'az104-06-vm1-nic'
+param vm1NsgName string = 'az104-06-vm1-nsg'
 param vm2Name string = 'az104-06-vm2'
 param vm2NicName string = 'az104-06-vm2-nic'
 param vm2NsgName string = 'az104-06-vm2-nsg'
-param adminUsername string = 'denis'
+param vm3Name string = 'az104-06-vm3'
+param vm3NicName string = 'az104-06-vm3-nic'
+param vm3NsgName string = 'az104-06-vm3-nsg'
+param adminUsername string = 'az104Admin'
 @secure()
-param adminPassword string = 'AZ104ADMINPASSOWRD'
+param adminPassword string
 
 resource rg1 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'az104-06-rg1'
@@ -110,6 +119,36 @@ module peer31 './modules/network/peering.bicep' = {
   }
 }
 
+module vm0 './modules/compute/vm.bicep' = {
+  name: 'vm0'
+  scope: rg1
+  params: {
+    location: location
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+    nicName: vm0NicName
+    nsgName: vm0NsgName
+    virtualNetworkName: vnet1Name
+    subnetName: 'subnet0'
+    vmName: vm0Name
+  }
+}
+
+module vm1 './modules/compute/vm.bicep' = {
+  name: 'vm1'
+  scope: rg1
+  params: {
+    location: location
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+    nicName: vm1NicName
+    nsgName: vm1NsgName
+    virtualNetworkName: vnet1Name
+    subnetName: 'subnet1'
+    vmName: vm1Name
+  }
+}
+
 module vm2 './modules/compute/vm.bicep' = {
   name: 'vm2'
   scope: rg2
@@ -122,5 +161,20 @@ module vm2 './modules/compute/vm.bicep' = {
     virtualNetworkName: vnet2Name
     subnetName: 'subnet0'
     vmName: vm2Name
+  }
+}
+
+module vm3 './modules/compute/vm.bicep' = {
+  name: 'vm3'
+  scope: rg3
+  params: {
+    location: location
+    adminUsername: adminUsername
+    adminPassword: adminPassword
+    nicName: vm3NicName
+    nsgName: vm3NsgName
+    virtualNetworkName: vnet3Name
+    subnetName: 'subnet0'
+    vmName: vm3Name
   }
 }
