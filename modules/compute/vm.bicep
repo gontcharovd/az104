@@ -6,6 +6,8 @@ param virtualNetworkName string
 param vmName string
 param vmSize string = 'Standard_B1ms'
 param enableIpForwarding bool = false
+param vmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
+param vmExtensionFileName string = 'install-vm-utils.ps1'
 param adminUsername string
 @secure()
 param adminPassword string
@@ -50,7 +52,6 @@ resource vm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
   }
 }
 
-
 resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = {
   parent: vm
   name: 'customScriptExtension'
@@ -61,7 +62,10 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' =
     typeHandlerVersion: '1.7'
     autoUpgradeMinorVersion: true
     settings: {
-      commandToExecute: 'powershell.exe Install-WindowsFeature -name Web-Server -IncludeManagementTools && powershell.exe remove-item \'C:\\inetpub\\wwwroot\\iisstart.htm\' && powershell.exe Add-Content -Path \'C:\\inetpub\\wwwroot\\iisstart.htm\' -Value $(\'Hello World from \' + $env:computername)'
+      fileUris: [
+        uri(vmExtensionFilePath, vmExtensionFileName)
+      ]
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${vmExtensionFileName}'
     }
   }
 }
