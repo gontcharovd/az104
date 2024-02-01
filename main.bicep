@@ -179,3 +179,18 @@ module vm3 './modules/compute/vm.bicep' = {
     vmName: vm3Name
   }
 }
+
+module vm2RouteTable './modules/network/route-table.bicep' = {
+  name: 'vm2RouteTable'
+  scope: rg2
+  params: {
+    routeTableName: 'vm2RouteTable'
+    location: location
+    route: {
+      name: 'routeVm2ToVm3'
+      addressPrefix: '10.63.0.0/16'
+      nextHopIpAddress: '10.60.0.4'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+}
