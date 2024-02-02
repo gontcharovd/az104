@@ -64,6 +64,7 @@ module vnet2 './modules/network/vnet.bicep' = {
     addressPrefixes: vnet2Address
     subnetNames: ['subnet0']
     subnetPrefixes: ['10.62.0.0/24']
+    routeTableId: vnet2RouteTable.outputs.routeTableId
   }
 }
 
@@ -83,8 +84,8 @@ module peer12 './modules/network/peering.bicep' = {
   name: 'peer12'
   scope: rg1
   params: {
-    sourceVnetName: vnet1Name
-    destinationVnetName: vnet2Name
+    sourceVnetName: vnet1.outputs.vnetName
+    destinationVnetName: vnet2.outputs.vnetName
     destinationVnetId: vnet2.outputs.vnetId
   }
 }
@@ -93,8 +94,8 @@ module peer21 './modules/network/peering.bicep' = {
   name: 'peer21'
   scope: rg2
   params: {
-    sourceVnetName: vnet2Name
-    destinationVnetName: vnet1Name
+    sourceVnetName: vnet2.outputs.vnetName
+    destinationVnetName: vnet1.outputs.vnetName
     destinationVnetId: vnet1.outputs.vnetId
   }
 }
@@ -103,8 +104,8 @@ module peer13 './modules/network/peering.bicep' = {
   name: 'peer13'
   scope: rg1
   params: {
-    sourceVnetName: vnet1Name
-    destinationVnetName: vnet3Name
+    sourceVnetName: vnet1.outputs.vnetName
+    destinationVnetName: vnet3.outputs.vnetName
     destinationVnetId: vnet3.outputs.vnetId
   }
 }
@@ -113,8 +114,8 @@ module peer31 './modules/network/peering.bicep' = {
   name: 'peer31'
   scope: rg3
   params: {
-    sourceVnetName: vnet3Name
-    destinationVnetName: vnet1Name
+    sourceVnetName: vnet3.outputs.vnetName
+    destinationVnetName: vnet1.outputs.vnetName
     destinationVnetId: vnet1.outputs.vnetId
   }
 }
@@ -128,7 +129,7 @@ module vm0 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm0NicName
     nsgName: vm0NsgName
-    virtualNetworkName: vnet1Name
+    virtualNetworkName: vnet1.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm0Name
     enableIpForwarding: true
@@ -144,7 +145,7 @@ module vm1 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm1NicName
     nsgName: vm1NsgName
-    virtualNetworkName: vnet1Name
+    virtualNetworkName: vnet1.outputs.vnetName
     subnetName: 'subnet1'
     vmName: vm1Name
   }
@@ -159,7 +160,7 @@ module vm2 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm2NicName
     nsgName: vm2NsgName
-    virtualNetworkName: vnet2Name
+    virtualNetworkName: vnet2.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm2Name
   }
@@ -174,13 +175,13 @@ module vm3 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm3NicName
     nsgName: vm3NsgName
-    virtualNetworkName: vnet3Name
+    virtualNetworkName: vnet3.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm3Name
   }
 }
 
-module vm2RouteTable './modules/network/route-table.bicep' = {
+module vnet2RouteTable './modules/network/route-table.bicep' = {
   name: 'vm2RouteTable'
   scope: rg2
   params: {
