@@ -43,40 +43,41 @@ resource rg4 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: location
 }
 
-module vnet1 './modules/network/vnet.bicep' = {
+module vnet1 './modules/network/vnet-hub.bicep' = {
   name: 'vnet1'
   scope: rg1
   params: {
     vnetName: vnet1Name
     location: location
-    addressPrefixes: vnet1Address
+    addressPrefix: vnet1Address
     subnetNames: ['subnet0', 'subnet1']
     subnetPrefixes: ['10.60.0.0/24', '10.60.1.0/24']
   }
 }
 
-module vnet2 './modules/network/vnet.bicep' = {
+module vnet2 './modules/network/vnet-spoke.bicep' = {
   name: 'vnet2'
   scope: rg2
   params: {
     vnetName: vnet2Name
     location: location
-    addressPrefixes: vnet2Address
-    subnetNames: ['subnet0']
-    subnetPrefixes: ['10.62.0.0/24']
+    addressPrefix: vnet2Address
+    subnetName: 'subnet0'
+    subnetPrefix: '10.62.0.0/24'
     routeTableId: vnet2RouteTable.outputs.routeTableId
   }
 }
 
-module vnet3 './modules/network/vnet.bicep' = {
+module vnet3 './modules/network/vnet-spoke.bicep' = {
   name: 'vnet3'
   scope: rg3
   params: {
     vnetName: vnet3Name
     location: location
-    addressPrefixes: vnet3Address
-    subnetNames: ['subnet0']
-    subnetPrefixes: ['10.63.0.0/24']
+    addressPrefix: vnet3Address
+    subnetName: 'subnet0'
+    subnetPrefix: '10.63.0.0/24'
+    routeTableId: vnet2RouteTable.outputs.routeTableId
   }
 }
 
@@ -190,6 +191,21 @@ module vnet2RouteTable './modules/network/route-table.bicep' = {
     route: {
       name: 'routeVm2ToVm3'
       addressPrefix: '10.63.0.0/16'
+      nextHopIpAddress: '10.60.0.4'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+}
+
+module vnet3RouteTable './modules/network/route-table.bicep' = {
+  name: 'vm3RouteTable'
+  scope: rg2
+  params: {
+    routeTableName: 'vm3RouteTable'
+    location: location
+    route: {
+      name: 'routeVm3ToVm2'
+      addressPrefix: '10.62.0.0/16'
       nextHopIpAddress: '10.60.0.4'
       nextHopType: 'VirtualAppliance'
     }
