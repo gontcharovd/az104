@@ -1,16 +1,16 @@
 param vnetName string 
-param addressPrefixes string 
+param addressPrefix string 
 param location string
 param subnetNames array
 param subnetPrefixes array
 
-resource vnet 'microsoft.network/virtualnetworks@2021-05-01' = {
+resource vnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
   name: vnetName
   location: location
   properties: {
     addressSpace: {
       addressPrefixes: [
-        addressPrefixes
+        addressPrefix
       ]
     }
     subnets: [
@@ -24,4 +24,5 @@ resource vnet 'microsoft.network/virtualnetworks@2021-05-01' = {
   }
 }
 
-output vnetId string = vnet.id
+output vnetId string = vnetHub.id
+output vnetName string = vnetHub.name

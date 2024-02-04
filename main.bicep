@@ -43,39 +43,41 @@ resource rg4 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: location
 }
 
-module vnet1 './modules/network/vnet.bicep' = {
+module vnet1 './modules/network/vnet-hub.bicep' = {
   name: 'vnet1'
   scope: rg1
   params: {
     vnetName: vnet1Name
     location: location
-    addressPrefixes: vnet1Address
+    addressPrefix: vnet1Address
     subnetNames: ['subnet0', 'subnet1']
     subnetPrefixes: ['10.60.0.0/24', '10.60.1.0/24']
   }
 }
 
-module vnet2 './modules/network/vnet.bicep' = {
+module vnet2 './modules/network/vnet-spoke.bicep' = {
   name: 'vnet2'
   scope: rg2
   params: {
     vnetName: vnet2Name
     location: location
-    addressPrefixes: vnet2Address
-    subnetNames: ['subnet0']
-    subnetPrefixes: ['10.62.0.0/24']
+    addressPrefix: vnet2Address
+    subnetName: 'subnet0'
+    subnetPrefix: '10.62.0.0/24'
+    routeTableId: vnet2RouteTable.outputs.routeTableId
   }
 }
 
-module vnet3 './modules/network/vnet.bicep' = {
+module vnet3 './modules/network/vnet-spoke.bicep' = {
   name: 'vnet3'
   scope: rg3
   params: {
     vnetName: vnet3Name
     location: location
-    addressPrefixes: vnet3Address
-    subnetNames: ['subnet0']
-    subnetPrefixes: ['10.63.0.0/24']
+    addressPrefix: vnet3Address
+    subnetName: 'subnet0'
+    subnetPrefix: '10.63.0.0/24'
+    routeTableId: vnet2RouteTable.outputs.routeTableId
   }
 }
 
@@ -83,8 +85,8 @@ module peer12 './modules/network/peering.bicep' = {
   name: 'peer12'
   scope: rg1
   params: {
-    sourceVnetName: vnet1Name
-    destinationVnetName: vnet2Name
+    sourceVnetName: vnet1.outputs.vnetName
+    destinationVnetName: vnet2.outputs.vnetName
     destinationVnetId: vnet2.outputs.vnetId
   }
 }
@@ -93,8 +95,8 @@ module peer21 './modules/network/peering.bicep' = {
   name: 'peer21'
   scope: rg2
   params: {
-    sourceVnetName: vnet2Name
-    destinationVnetName: vnet1Name
+    sourceVnetName: vnet2.outputs.vnetName
+    destinationVnetName: vnet1.outputs.vnetName
     destinationVnetId: vnet1.outputs.vnetId
   }
 }
@@ -103,8 +105,8 @@ module peer13 './modules/network/peering.bicep' = {
   name: 'peer13'
   scope: rg1
   params: {
-    sourceVnetName: vnet1Name
-    destinationVnetName: vnet3Name
+    sourceVnetName: vnet1.outputs.vnetName
+    destinationVnetName: vnet3.outputs.vnetName
     destinationVnetId: vnet3.outputs.vnetId
   }
 }
@@ -113,8 +115,8 @@ module peer31 './modules/network/peering.bicep' = {
   name: 'peer31'
   scope: rg3
   params: {
-    sourceVnetName: vnet3Name
-    destinationVnetName: vnet1Name
+    sourceVnetName: vnet3.outputs.vnetName
+    destinationVnetName: vnet1.outputs.vnetName
     destinationVnetId: vnet1.outputs.vnetId
   }
 }
@@ -128,10 +130,11 @@ module vm0 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm0NicName
     nsgName: vm0NsgName
-    virtualNetworkName: vnet1Name
+    virtualNetworkName: vnet1.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm0Name
     enableIpForwarding: true
+    vmExtensionFileName: 'configure-ip-forwarding.ps1'
   }
 }
 
@@ -144,9 +147,10 @@ module vm1 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm1NicName
     nsgName: vm1NsgName
-    virtualNetworkName: vnet1Name
+    virtualNetworkName: vnet1.outputs.vnetName
     subnetName: 'subnet1'
     vmName: vm1Name
+    vmExtensionFileName: 'configure-ip-forwarding.ps1'
   }
 }
 
@@ -159,9 +163,10 @@ module vm2 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm2NicName
     nsgName: vm2NsgName
-    virtualNetworkName: vnet2Name
+    virtualNetworkName: vnet2.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm2Name
+    vmExtensionFileName: 'configure-webserver.ps1'
   }
 }
 
@@ -174,8 +179,39 @@ module vm3 './modules/compute/vm.bicep' = {
     adminPassword: adminPassword
     nicName: vm3NicName
     nsgName: vm3NsgName
-    virtualNetworkName: vnet3Name
+    virtualNetworkName: vnet3.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm3Name
+    vmExtensionFileName: 'configure-webserver.ps1'
+  }
+}
+
+module vnet2RouteTable './modules/network/route-table.bicep' = {
+  name: 'vm2RouteTable'
+  scope: rg2
+  params: {
+    routeTableName: 'vm2RouteTable'
+    location: location
+    route: {
+      name: 'routeVm2ToVm3'
+      addressPrefix: '10.63.0.0/16'
+      nextHopIpAddress: '10.60.0.4'
+      nextHopType: 'VirtualAppliance'
+    }
+  }
+}
+
+module vnet3RouteTable './modules/network/route-table.bicep' = {
+  name: 'vm3RouteTable'
+  scope: rg3
+  params: {
+    routeTableName: 'vm3RouteTable'
+    location: location
+    route: {
+      name: 'routeVm3ToVm2'
+      addressPrefix: '10.62.0.0/16'
+      nextHopIpAddress: '10.60.0.4'
+      nextHopType: 'VirtualAppliance'
+    }
   }
 }

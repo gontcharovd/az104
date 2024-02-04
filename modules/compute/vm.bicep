@@ -7,7 +7,7 @@ param vmName string
 param vmSize string = 'Standard_B1ms'
 param enableIpForwarding bool = false
 param vmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param vmExtensionFileName string = 'install-vm-utils.ps1'
+param vmExtensionFileName string
 param adminUsername string
 @secure()
 param adminPassword string
