@@ -77,7 +77,7 @@ module vnet3 './modules/network/vnet-spoke.bicep' = {
     addressPrefix: vnet3Address
     subnetName: 'subnet0'
     subnetPrefix: '10.63.0.0/24'
-    routeTableId: vnet2RouteTable.outputs.routeTableId
+    routeTableId: vnet3RouteTable.outputs.routeTableId
   }
 }
 
