@@ -134,6 +134,7 @@ module vm0 './modules/compute/vm.bicep' = {
     subnetName: 'subnet0'
     vmName: vm0Name
     enableIpForwarding: true
+    vmExtensionFileName: 'configure-ip-forwarding.ps1'
   }
 }
 
@@ -149,6 +150,7 @@ module vm1 './modules/compute/vm.bicep' = {
     virtualNetworkName: vnet1.outputs.vnetName
     subnetName: 'subnet1'
     vmName: vm1Name
+    vmExtensionFileName: 'configure-ip-forwarding.ps1'
   }
 }
 
@@ -164,6 +166,7 @@ module vm2 './modules/compute/vm.bicep' = {
     virtualNetworkName: vnet2.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm2Name
+    vmExtensionFileName: 'configure-webserver.ps1'
   }
 }
 
@@ -179,6 +182,7 @@ module vm3 './modules/compute/vm.bicep' = {
     virtualNetworkName: vnet3.outputs.vnetName
     subnetName: 'subnet0'
     vmName: vm3Name
+    vmExtensionFileName: 'configure-webserver.ps1'
   }
 }
 
@@ -199,7 +203,7 @@ module vnet2RouteTable './modules/network/route-table.bicep' = {
 
 module vnet3RouteTable './modules/network/route-table.bicep' = {
   name: 'vm3RouteTable'
-  scope: rg2
+  scope: rg3
   params: {
     routeTableName: 'vm3RouteTable'
     location: location
