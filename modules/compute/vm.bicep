@@ -6,6 +6,7 @@ param virtualNetworkName string
 param vmName string
 param vmSize string = 'Standard_B1ms'
 param enableIpForwarding bool = false
+@description('Virtual machine extension files are stored in a public GitHub repo.')
 param vmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
 param vmExtensionFileName string
 param adminUsername string

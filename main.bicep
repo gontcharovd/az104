@@ -22,6 +22,7 @@ param vm3NsgName string = 'az104-06-vm3-nsg'
 param adminUsername string = 'az104Admin'
 @secure()
 param adminPassword string
+param loadBalancerName string = 'az104-06-lb4'
 
 resource rg1 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'az104-06-rg1'
@@ -213,5 +214,15 @@ module vnet3RouteTable './modules/network/route-table.bicep' = {
       nextHopIpAddress: '10.60.0.4'
       nextHopType: 'VirtualAppliance'
     }
+  }
+}
+
+module publicLoadBalancer './modules/network/load-balancer.bicep' = {
+  name: 'publicLoadBalancer'
+  scope: rg4
+  params: {
+    loadBalancerName: loadBalancerName
+    location: location
+    subnetId: vnet1.outputs.subnet0Id
   }
 }

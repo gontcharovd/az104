@@ -14,6 +14,7 @@ resource vnetSpoke 'microsoft.network/virtualnetworks@2021-05-01' = {
         addressPrefix
       ]
     }
+    // spoke vnets have only one subnet
     subnets: [
       {
         name: subnetName

@@ -14,6 +14,7 @@ resource vnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
       ]
     }
     subnets: [
+      // hub subnets have no routing table
       for (subnetName, index) in subnetNames: {
         name: subnetName
         properties: {
@@ -25,4 +26,5 @@ resource vnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
 }
 
 output vnetId string = vnetHub.id
+output subnet0Id string = vnetHub.properties.subnets[0].id
 output vnetName string = vnetHub.name
