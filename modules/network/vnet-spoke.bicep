@@ -1,27 +1,27 @@
-param vnetName string 
-param addressPrefix string 
-param location string
-param subnetName string
-param subnetPrefix string
-param routeTableId string
+param parVnetName string 
+param parAddressPrefix string 
+param parLocation string
+param parSubnetName string
+param parSubnetPrefix string
+param parRouteTableId string
 
-resource vnetSpoke 'microsoft.network/virtualnetworks@2021-05-01' = {
-  name: vnetName
-  location: location
+resource resVnetSpoke 'microsoft.network/virtualnetworks@2021-05-01' = {
+  name: parVnetName
+  location: parLocation
   properties: {
     addressSpace: {
       addressPrefixes: [
-        addressPrefix
+        parAddressPrefix
       ]
     }
     // spoke vnets have only one subnet
     subnets: [
       {
-        name: subnetName
+        name: parSubnetName
         properties: {
-          addressPrefix: subnetPrefix
+          addressPrefix: parSubnetPrefix
           routeTable: {
-            id: routeTableId
+            id: parRouteTableId
           }
         }
       }
@@ -29,5 +29,5 @@ resource vnetSpoke 'microsoft.network/virtualnetworks@2021-05-01' = {
   }
 }
 
-output vnetId string = vnetSpoke.id
-output vnetName string = vnetSpoke.name
+output outVnetId string = resVnetSpoke.id
+output outVnetName string = resVnetSpoke.name

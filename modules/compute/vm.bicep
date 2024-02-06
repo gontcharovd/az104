@@ -1,32 +1,32 @@
-param location string
-param nicName string
-param nsgName string
-param subnetName string
-param virtualNetworkName string
-param vmName string
-param vmSize string = 'Standard_B1ms'
-param enableIpForwarding bool = false
+param parLocation string
+param parNicName string
+param parNsgName string
+param parSubnetName string
+param parVirtualNetworkName string
+param parVmName string
+param parVmSize string = 'Standard_B1ms'
+param parEnableIpForwarding bool = false
 @description('Virtual machine extension files are stored in a public GitHub repo.')
-param vmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param vmExtensionFileName string
-param adminUsername string
+param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
+param parVmExtensionFileName string
+param parAdminUsername string
 @secure()
-param adminPassword string
+param parAdminPassword string
 
-resource vm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
-  name: vmName
-  location: location
+resource resVm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
+  name: parVmName
+  location: parLocation
   properties: {
     osProfile: {
-      computerName: vmName
-      adminUsername: adminUsername
-      adminPassword: adminPassword
+      computerName: parVmName
+      adminUsername: parAdminUsername
+      adminPassword: parAdminPassword
       windowsConfiguration: {
         provisionVMAgent: true
       }
     }
     hardwareProfile: {
-      vmSize: vmSize
+      vmSize: parVmSize
     }
     storageProfile: {
       imageReference: {
@@ -46,17 +46,17 @@ resource vm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
           properties: {
             primary: true
           }
-          id: nic.id
+          id: resNic.id
         }
       ]
     }
   }
 }
 
-resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = {
-  parent: vm
+resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = {
+  parent: resVm
   name: 'customScriptExtension'
-  location: location
+  location: parLocation
   properties: {
     publisher: 'Microsoft.Compute'
     type: 'CustomScriptExtension'
@@ -64,38 +64,38 @@ resource vmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' =
     autoUpgradeMinorVersion: true
     settings: {
       fileUris: [
-        uri(vmExtensionFilePath, vmExtensionFileName)
+        uri(parVmExtensionFilePath, parVmExtensionFileName)
       ]
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${vmExtensionFileName}'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${parVmExtensionFileName}'
     }
   }
 }
 
-resource nic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
-  name: nicName
-  location: location
+resource resNic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
+  name: parNicName
+  location: parLocation
   properties: {
-    enableIPForwarding: enableIpForwarding
+    enableIPForwarding: parEnableIpForwarding
     ipConfigurations: [
       {
         name: 'ipconfig'
         properties: {
           subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', virtualNetworkName, subnetName)
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, parSubnetName)
           }
           privateIPAllocationMethod: 'Dynamic'
         }
       }
     ]
     networkSecurityGroup: {
-      id: nsg.id
+      id: resNsg.id
     }
   }
 }
 
-resource nsg 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
-  name: nsgName
-  location: location
+resource resNsg 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
+  name: parNsgName
+  location: parLocation
   properties: {
     securityRules: [
       {

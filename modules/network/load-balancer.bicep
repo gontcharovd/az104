@@ -1,11 +1,11 @@
-param loadBalancerName string
-param location string
-param subnetId string
+param parLoadBalancerName string
+param parLocation string
+param parSubnetId string
 
 
-resource symbolicname 'Microsoft.Network/loadBalancers@2023-04-01' = {
-  name: loadBalancerName
-  location: location
+resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
+  name: parLoadBalancerName
+  location: parLocation
   sku: {
     name: 'Standard'
     tier: 'Regional'
@@ -58,7 +58,7 @@ resource symbolicname 'Microsoft.Network/loadBalancers@2023-04-01' = {
           privateIPAddressVersion: 'IPv4'
           privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            location: location
+            location: parLocation
             properties: {
               publicIPAddressVersion: 'IPv4'
               publicIPAllocationMethod: 'Dynamic'
@@ -69,7 +69,7 @@ resource symbolicname 'Microsoft.Network/loadBalancers@2023-04-01' = {
             }
           }
           subnet: {
-            id: subnetId
+            id: parSubnetId
             name: 'string'
           }
         }
