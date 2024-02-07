@@ -55,22 +55,8 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
       {
         name: 'az104-06-pip4'
         properties: {
-          privateIPAddressVersion: 'IPv4'
-          privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            location: parLocation
-            properties: {
-              publicIPAddressVersion: 'IPv4'
-              publicIPAllocationMethod: 'Dynamic'
-            }
-          sku: {
-              name: 'Standard'
-              tier: 'Regional'
-            }
-          }
-          subnet: {
-            id: parSubnetId
-            name: 'string'
+            id: resLbPublicIP.id
           }
         }
       }
@@ -179,5 +165,18 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
       //   }
       // }
     ]
+  }
+}
+
+resource resLbPublicIP'Microsoft.Network/publicIPAddresses@2021-08-01' = {
+  name: 'lbPublicIP'
+  location: parLocation
+  sku: {
+      name: 'Standard'
+      tier: 'Regional'
+    }
+  properties: {
+    publicIPAddressVersion: 'IPv4'
+    publicIPAllocationMethod: 'Dynamic'
   }
 }
