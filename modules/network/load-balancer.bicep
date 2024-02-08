@@ -12,44 +12,44 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   }
   properties: {
     backendAddressPools: [
-      // {
-      //   id: 'string'
-      //   name: 'string'
-      //   properties: {
-      //     // drainPeriodInSeconds: int
-      //     loadBalancerBackendAddresses: [
-      //       {
-      //         name: 'string'
-      //         properties: {
-      //           adminState: 'None'
-      //           ipAddress: 'string'
-      //           loadBalancerFrontendIPConfiguration: {
-      //             id: 'string'
-      //           }
-      //           subnet: {
-      //             id: 'string'
-      //           }
-      //           virtualNetwork: {
-      //             id: 'string'
-      //           }
-      //         }
-      //       }
-      //     ]
-      //     location: 'string'
-      //     syncMode: 'string'
-      //     tunnelInterfaces: [
-      //       {
-      //         identifier: int
-      //         port: int
-      //         protocol: 'string'
-      //         type: 'string'
-      //       }
-      //     ]
-      //     virtualNetwork: {
-      //       id: 'string'
-      //     }
-      //   }
-      // }
+      {
+        id: 'string'
+        name: 'string'
+        properties: {
+          // drainPeriodInSeconds: int
+          loadBalancerBackendAddresses: [
+            {
+              name: 'string'
+              properties: {
+                adminState: 'None'
+                ipAddress: 'string'
+                loadBalancerFrontendIPConfiguration: {
+                  id: 'string'
+                }
+                subnet: {
+                  id: 'string'
+                }
+                virtualNetwork: {
+                  id: 'string'
+                }
+              }
+            }
+          ]
+          location: 'string'
+          syncMode: 'string'
+          tunnelInterfaces: [
+            {
+              identifier: int
+              port: int
+              protocol: 'string'
+              type: 'string'
+            }
+          ]
+          virtualNetwork: {
+            id: 'string'
+          }
+        }
+      }
     ]
     frontendIPConfigurations: [
       {
@@ -177,6 +177,6 @@ resource resLbPublicIP'Microsoft.Network/publicIPAddresses@2021-08-01' = {
     }
   properties: {
     publicIPAddressVersion: 'IPv4'
-    publicIPAllocationMethod: 'Dynamic'
+    publicIPAllocationMethod: 'Static'
   }
 }
