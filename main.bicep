@@ -168,6 +168,8 @@ module modVm2 './modules/compute/vm.bicep' = {
     parSubnetName: 'subnet0'
     parVmName: parVm2Name
     parVmExtensionFileName: 'configure-webserver.ps1'
+    parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
+    parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
 
@@ -223,6 +225,5 @@ module modPublicLoadBalancer './modules/network/load-balancer.bicep' = {
   params: {
     parLoadBalancerName: parLoadBalancerName
     parLocation: parLocation
-    parSubnetId: modVnet1.outputs.outSubnet0Id
   }
 }

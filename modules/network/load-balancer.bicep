@@ -1,6 +1,6 @@
 param parLoadBalancerName string
 param parLocation string
-param parSubnetId string
+param parLoadBalancerBackendPoolName string = 'az104-06-be1'
 
 
 resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
@@ -13,42 +13,7 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   properties: {
     backendAddressPools: [
       {
-        id: 'string'
-        name: 'string'
-        properties: {
-          // drainPeriodInSeconds: int
-          loadBalancerBackendAddresses: [
-            {
-              name: 'string'
-              properties: {
-                adminState: 'None'
-                ipAddress: 'string'
-                loadBalancerFrontendIPConfiguration: {
-                  id: 'string'
-                }
-                subnet: {
-                  id: 'string'
-                }
-                virtualNetwork: {
-                  id: 'string'
-                }
-              }
-            }
-          ]
-          location: 'string'
-          syncMode: 'string'
-          tunnelInterfaces: [
-            {
-              identifier: int
-              port: int
-              protocol: 'string'
-              type: 'string'
-            }
-          ]
-          virtualNetwork: {
-            id: 'string'
-          }
-        }
+        name: parLoadBalancerBackendPoolName
       }
     ]
     frontendIPConfigurations: [
@@ -180,3 +145,6 @@ resource resLbPublicIP'Microsoft.Network/publicIPAddresses@2021-08-01' = {
     publicIPAllocationMethod: 'Static'
   }
 }
+
+output outLoadBalancerName string = parLoadBalancerName
+output outLoadBalancerBackendPoolName string = parLoadBalancerBackendPoolName

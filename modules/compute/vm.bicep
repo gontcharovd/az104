@@ -12,6 +12,8 @@ param parVmExtensionFileName string
 param parAdminUsername string
 @secure()
 param parAdminPassword string
+param parLoadBalancerName string = ''
+param parLoadBalancerBackendPoolName string = ''
 
 resource resVm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
   name: parVmName
@@ -71,7 +73,7 @@ resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01
   }
 }
 
-resource resNic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
+resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   name: parNicName
   location: parLocation
   properties: {
@@ -89,6 +91,9 @@ resource resNic 'Microsoft.Network/networkInterfaces@2018-08-01' = {
     ]
     networkSecurityGroup: {
       id: resNsg.id
+    }
+    loadBalancerBackendAddresspools: {
+      id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parLoadBalancerName, parLoadBalancerBackendPoolName)
     }
   }
 }
