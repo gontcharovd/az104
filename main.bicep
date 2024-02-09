@@ -39,10 +39,10 @@ resource resRg3 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: parLocation
 }
 
-resource resRg4 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-  name: 'az104-06-rg4'
-  location: parLocation
-}
+// resource resRg4 'Microsoft.Resources/resourceGroups@2022-09-01' = {
+//   name: 'az104-06-rg4'
+//   location: parLocation
+// }
 
 module modVnet1 './modules/network/vnet-hub.bicep' = {
   name: 'vnet1'
@@ -136,10 +136,12 @@ module modVm0 './modules/compute/vm.bicep' = {
     parVmName: parVm0Name
     parEnableIpForwarding: true
     parVmExtensionFileName: 'configure-ip-forwarding.ps1'
+    parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
+    parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
 
-module vm1 './modules/compute/vm.bicep' = {
+module modVm1 './modules/compute/vm.bicep' = {
   name: 'vm1'
   scope: resRg1
   params: {
@@ -152,6 +154,8 @@ module vm1 './modules/compute/vm.bicep' = {
     parSubnetName: 'subnet1'
     parVmName: parVm1Name
     parVmExtensionFileName: 'configure-ip-forwarding.ps1'
+    parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
+    parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
 
@@ -168,8 +172,6 @@ module modVm2 './modules/compute/vm.bicep' = {
     parSubnetName: 'subnet0'
     parVmName: parVm2Name
     parVmExtensionFileName: 'configure-webserver.ps1'
-    parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
-    parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
 
@@ -221,9 +223,10 @@ module modVnet3RouteTable './modules/network/route-table.bicep' = {
 
 module modPublicLoadBalancer './modules/network/load-balancer.bicep' = {
   name: 'publicLoadBalancer'
-  scope: resRg4
+  scope: resRg1
   params: {
     parLoadBalancerName: parLoadBalancerName
     parLocation: parLocation
+    parBackendPoolVnetId: modVnet1.outputs.outVnetId
   }
 }

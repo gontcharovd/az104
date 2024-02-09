@@ -86,14 +86,16 @@ resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, parSubnetName)
           }
           privateIPAllocationMethod: 'Dynamic'
+          loadBalancerBackendAddressPools: (parLoadBalancerName == '') ? []: [
+            {
+              id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parLoadBalancerName, parLoadBalancerBackendPoolName)
+            }
+          ]
         }
       }
     ]
     networkSecurityGroup: {
       id: resNsg.id
-    }
-    loadBalancerBackendAddresspools: {
-      id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parLoadBalancerName, parLoadBalancerBackendPoolName)
     }
   }
 }
