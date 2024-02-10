@@ -57,7 +57,7 @@ resource resVm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
 
 resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = {
   parent: resVm
-  name: 'customScriptExtension'
+  name: '${parVmName}-customScriptExtension'
   location: parLocation
   properties: {
     publisher: 'Microsoft.Compute'
@@ -80,7 +80,7 @@ resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
     enableIPForwarding: parEnableIpForwarding
     ipConfigurations: [
       {
-        name: 'ipconfig'
+        name: '${parVmName}-ipconfig'
         properties: {
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, parSubnetName)

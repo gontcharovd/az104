@@ -15,6 +15,12 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
       {
         name: parLoadBalancerBackendPoolName
         properties: {
+          loadBalancerBackendAddresses: [for vm in parBackendPoolVMs : {
+            name: 'string'
+            properties: {
+              ipAddress: 'string'
+            }
+          }]
           virtualNetwork: {
             id: parBackendPoolVnetId
           }
