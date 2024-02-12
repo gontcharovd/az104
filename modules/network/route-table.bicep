@@ -1,24 +1,24 @@
-param routeTableName string
-param location string
-param route object
+param parRouteTableName string
+param parLocation string
+param parRoute object
 
-resource routeTable 'Microsoft.Network/routeTables@2023-04-01' = {
-  name: routeTableName
-  location: location
+resource resRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
+  name: parRouteTableName
+  location: parLocation
   properties: {
     disableBgpRoutePropagation: true
     routes: [
       {
-        name: route.name
+        name: parRoute.name
         properties: {
-          addressPrefix: route.addressPrefix
+          addressPrefix: parRoute.addressPrefix
           hasBgpOverride: false
-          nextHopIpAddress: route.nextHopIpAddress
-          nextHopType: route.nextHopType
+          nextHopIpAddress: parRoute.nextHopIpAddress
+          nextHopType: parRoute.nextHopType
         }
       }
     ]
   }
 }
 
-output routeTableId string = routeTable.id
+output outRouteTableId string = resRouteTable.id

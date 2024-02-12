@@ -1,28 +1,30 @@
-param vnetName string 
-param addressPrefix string 
-param location string
-param subnetNames array
-param subnetPrefixes array
+param parVnetName string 
+param parAddressPrefix string 
+param parLocation string
+param parSubnetNames array
+param parSubnetPrefixes array
 
-resource vnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
-  name: vnetName
-  location: location
+resource resVnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
+  name: parVnetName
+  location: parLocation
   properties: {
     addressSpace: {
       addressPrefixes: [
-        addressPrefix
+        parAddressPrefix
       ]
     }
     subnets: [
-      for (subnetName, index) in subnetNames: {
+      // hub subnets have no routing table
+      for (subnetName, index) in parSubnetNames: {
         name: subnetName
         properties: {
-          addressPrefix: subnetPrefixes[index]
+          addressPrefix: parSubnetPrefixes[index]
         }
       }
     ]
   }
 }
 
-output vnetId string = vnetHub.id
-output vnetName string = vnetHub.name
+output outVnetId string = resVnetHub.id
+output outSubnet0Id string = resVnetHub.properties.subnets[0].id
+output outVnetName string = resVnetHub.name
