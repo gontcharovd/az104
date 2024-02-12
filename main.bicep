@@ -227,6 +227,5 @@ module modPublicLoadBalancer './modules/network/load-balancer.bicep' = {
   params: {
     parLoadBalancerName: parLoadBalancerName
     parLocation: parLocation
-    parBackendPoolVnetId: modVnet1.outputs.outVnetId
   }
 }

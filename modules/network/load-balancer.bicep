@@ -1,6 +1,5 @@
 param parLoadBalancerName string
 param parLocation string
-param parBackendPoolVnetId string
 param parLoadBalancerBackendPoolName string = 'az104-06-be1'
 
 resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
@@ -14,17 +13,6 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
     backendAddressPools: [
       {
         name: parLoadBalancerBackendPoolName
-        properties: {
-          loadBalancerBackendAddresses: [for vm in parBackendPoolVMs : {
-            name: 'string'
-            properties: {
-              ipAddress: 'string'
-            }
-          }]
-          virtualNetwork: {
-            id: parBackendPoolVnetId
-          }
-        }
       }
     ]
     frontendIPConfigurations: [
