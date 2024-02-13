@@ -39,11 +39,6 @@ resource resRg3 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: parLocation
 }
 
-// resource resRg4 'Microsoft.Resources/resourceGroups@2022-09-01' = {
-//   name: 'az104-06-rg4'
-//   location: parLocation
-// }
-
 module modVnet1 './modules/network/vnet-hub.bicep' = {
   name: 'vnet1'
   scope: resRg1

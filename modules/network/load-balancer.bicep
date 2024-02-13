@@ -1,6 +1,6 @@
 param parLoadBalancerName string
 param parLocation string
-param parLoadBalancerBackendPoolName string = 'az104-06-be1'
+param parLoadBalancerBackendPoolName string = 'az104-06-lb4-be1'
 
 resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   name: parLoadBalancerName
@@ -25,50 +25,11 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
         }
       }
     ]
-    inboundNatPools: [
-      // {
-      //   id: 'string'
-      //   name: 'string'
-      //   properties: {
-      //     backendPort: int
-      //     enableFloatingIP: bool
-      //     enableTcpReset: bool
-      //     frontendIPConfiguration: {
-      //       id: 'string'
-      //     }
-      //     frontendPortRangeEnd: int
-      //     frontendPortRangeStart: int
-      //     idleTimeoutInMinutes: int
-      //     protocol: 'string'
-      //   }
-      // }
-    ]
-    inboundNatRules: [
-      // {
-      //   id: 'string'
-      //   name: 'string'
-      //   properties: {
-      //     backendAddressPool: {
-      //       id: 'string'
-      //     }
-      //     backendPort: int
-      //     enableFloatingIP: bool
-      //     enableTcpReset: bool
-      //     frontendIPConfiguration: {
-      //       id: 'string'
-      //     }
-      //     frontendPort: int
-      //     frontendPortRangeEnd: int
-      //     frontendPortRangeStart: int
-      //     idleTimeoutInMinutes: int
-      //     protocol: 'string'
-      //   }
-      // }
-    ]
+    inboundNatPools: []
+    inboundNatRules: []
     loadBalancingRules: [
       // {
-      //   id: 'string'
-      //   name: 'string'
+      //   name: 'az104-06-lb4-lbrule1'
       //   properties: {
       //     backendAddressPool: {
       //       id: 'string'
