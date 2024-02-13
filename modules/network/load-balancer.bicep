@@ -1,6 +1,10 @@
 param parLoadBalancerName string
 param parLocation string
 param parLoadBalancerBackendPoolName string = 'az104-06-lb4-be1'
+param parLoadBalancerPublicIpName string = 'az104-06-pip4'
+param parLoadBalancerFrontendIpConfigName string = 'az104-06-pip4'
+param parLoadBalancingRuleName string = 'az104-06-lb4-lbrule1'
+param parLoadBalancerHealthProbeName string = 'az104-06-lb4-hp1'
 
 resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   name: parLoadBalancerName
@@ -17,10 +21,10 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
     ]
     frontendIPConfigurations: [
       {
-        name: 'az104-06-pip4'
+        name: parLoadBalancerFrontendIpConfigName
         properties: {
           publicIPAddress: {
-            id: resLbPublicIP.id
+            id: resLoadBalancerPublicIP.id
           }
         }
       }
@@ -28,73 +32,42 @@ resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
     inboundNatPools: []
     inboundNatRules: []
     loadBalancingRules: [
-      // {
-      //   name: 'az104-06-lb4-lbrule1'
-      //   properties: {
-      //     backendAddressPool: {
-      //       id: 'string'
-      //     }
-      //     backendAddressPools: [
-      //       {
-      //         id: 'string'
-      //       }
-      //     ]
-      //     backendPort: int
-      //     disableOutboundSnat: bool
-      //     enableFloatingIP: bool
-      //     enableTcpReset: bool
-      //     frontendIPConfiguration: {
-      //       id: 'string'
-      //     }
-      //     frontendPort: int
-      //     idleTimeoutInMinutes: int
-      //     loadDistribution: 'string'
-      //     probe: {
-      //       id: 'string'
-      //     }
-      //     protocol: 'string'
-      //   }
-      // }
+      {
+        name: parLoadBalancingRuleName
+        properties: {
+          backendAddressPool: {
+            id: resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parLoadBalancerName, parLoadBalancerBackendPoolName)
+          }
+          backendPort: 80
+          frontendIPConfiguration: {
+            id: resourceId('Microsoft.Network/loadBalancers/frontendIPConfigurations', parLoadBalancerName, parLoadBalancerFrontendIpConfigName)
+          }
+          frontendPort: 80
+          loadDistribution: 'Default'
+          protocol: 'Tcp'
+          probe: {
+            id: resourceId('Microsoft.Network/loadBalancers/probes', parLoadBalancerName, parLoadBalancerHealthProbeName)
+          }
+        }
+      }
     ]
-    outboundRules: [
-      // {
-      //   id: 'string'
-      //   name: 'string'
-      //   properties: {
-      //     allocatedOutboundPorts: int
-      //     backendAddressPool: {
-      //       id: 'string'
-      //     }
-      //     enableTcpReset: bool
-      //     frontendIPConfigurations: [
-      //       {
-      //         id: 'string'
-      //       }
-      //     ]
-      //     idleTimeoutInMinutes: int
-      //     protocol: 'string'
-      //   }
-      // }
-    ]
+    outboundRules: []
     probes: [
-      // {
-      //   id: 'string'
-      //   name: 'string'
-      //   properties: {
-      //     intervalInSeconds: int
-      //     numberOfProbes: int
-      //     port: int
-      //     probeThreshold: int
-      //     protocol: 'string'
-      //     requestPath: 'string'
-      //   }
-      // }
+      {
+        name: parLoadBalancerHealthProbeName
+        properties: {
+          intervalInSeconds: 5
+          port: 80
+          probeThreshold: 2
+          protocol: 'Tcp'
+        }
+      }
     ]
   }
 }
 
-resource resLbPublicIP'Microsoft.Network/publicIPAddresses@2021-08-01' = {
-  name: 'lbPublicIP'
+resource resLoadBalancerPublicIP 'Microsoft.Network/publicIPAddresses@2021-08-01' = {
+  name: parLoadBalancerPublicIpName
   location: parLocation
   sku: {
       name: 'Standard'
