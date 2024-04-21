@@ -130,7 +130,7 @@ module modVm0 './modules/compute/vm.bicep' = {
     parSubnetName: 'subnet0'
     parVmName: parVm0Name
     parEnableIpForwarding: true
-    parVmExtensionFileName: 'configure-ip-forwarding.ps1'
+    parVmExtensionFileName: 'configure-hub-vm.ps1'
     parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
     parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
@@ -148,7 +148,7 @@ module modVm1 './modules/compute/vm.bicep' = {
     parVirtualNetworkName: modVnet1.outputs.outVnetName
     parSubnetName: 'subnet1'
     parVmName: parVm1Name
-    parVmExtensionFileName: 'configure-ip-forwarding.ps1'
+    parVmExtensionFileName: 'configure-hub-vm.ps1'
     parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
     parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
@@ -166,7 +166,6 @@ module modVm2 './modules/compute/vm.bicep' = {
     parVirtualNetworkName: modVnet2.outputs.outVnetName
     parSubnetName: 'subnet0'
     parVmName: parVm2Name
-    parVmExtensionFileName: 'configure-webserver.ps1'
   }
 }
 
@@ -182,7 +181,6 @@ module modVm3 './modules/compute/vm.bicep' = {
     parVirtualNetworkName: modVnet3.outputs.outVnetName
     parSubnetName: 'subnet0'
     parVmName: parVm3Name
-    parVmExtensionFileName: 'configure-webserver.ps1'
   }
 }
 

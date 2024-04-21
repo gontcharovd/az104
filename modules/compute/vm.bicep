@@ -8,7 +8,7 @@ param parVmSize string = 'Standard_B1ms'
 param parEnableIpForwarding bool = false
 @description('Virtual machine extension files are stored in a public GitHub repo.')
 param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param parVmExtensionFileName string
+param parVmExtensionFileName string = null
 param parAdminUsername string
 @secure()
 param parAdminPassword string
@@ -55,7 +55,7 @@ resource resVm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
   }
 }
 
-resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = {
+resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = if (parVmExtensionFileName) {
   parent: resVm
   name: '${parVmName}-customScriptExtension'
   location: parLocation
