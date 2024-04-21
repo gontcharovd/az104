@@ -1,3 +1,4 @@
 main.json
 output.json
 venv/
+*.swp
