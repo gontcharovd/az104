@@ -149,7 +149,7 @@ module modVm1 './modules/compute/vm.bicep' = {
     parSubnetName: 'subnet1'
     parVmName: parVm1Name
     parVmExtensionFileName: 'configure-hub-vm.ps1'
-    parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
+    // parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
     parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
