@@ -11,8 +11,8 @@ param parAdminUsername string
 param parAdminPassword string
 param parLoadBalancerName string = ''
 param parLoadBalancerBackendPoolName string = ''
-param parVmExtensionFilePath = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param parVmExtensionFileName = ''
+param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
+param parVmExtensionFileName string = ''
 
 resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: parVmName
