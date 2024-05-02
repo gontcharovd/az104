@@ -11,9 +11,8 @@ param parAdminUsername string
 param parAdminPassword string
 param parLoadBalancerName string = ''
 param parLoadBalancerBackendPoolName string = ''
-
-var varVmExtensionFilePath = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-var varVmExtensionFileName = 'configure-vm.ps1'
+param parVmExtensionFilePath = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
+param parVmExtensionFileName = ''
 
 resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: parVmName
@@ -55,7 +54,7 @@ resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   }
 }
 
-resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
+resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = if (!empty(parVmExtensionFileName)) {
   parent: resVm
   name: '${parVmName}-customScriptExtension'
   location: parLocation
@@ -66,9 +65,9 @@ resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01
     autoUpgradeMinorVersion: true
     settings: {
       fileUris: [
-        uri(varVmExtensionFilePath, varVmExtensionFileName)
+        uri(parVmExtensionFilePath, parVmExtensionFileName)
       ]
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${varVmExtensionFileName}'
+      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${parVmExtensionFileName}'
     }
   }
 }
