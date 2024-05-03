@@ -141,7 +141,10 @@ resource resNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
 resource resPublicIPAddress 'Microsoft.Network/publicIPAddresses@2023-09-01' = {
   name: '${parVmName}-public-ip'
   location: parLocation
-  properties: {
-    publicIPAllocationMethod: 'Dynamic'
+  sku: {
+    name: 'Standard'
   }
+  properties: {
+    publicIPAddressVersion: 'IPv4'
+    publicIPAllocationMethod: 'Static' }
 }
