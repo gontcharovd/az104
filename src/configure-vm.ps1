@@ -5,14 +5,8 @@ Install-WindowsFeature -Name "RSAT-RemoteAccess-Powershell"
 Install-RemoteAccess -VpnType RoutingOnly
 Get-NetAdapter | Set-NetIPInterface -Forwarding Enabled
 
-
-Set-Content -Path "$HOME\Desktop\hello1.txt" -Value "part one"
-
-# Install "Hello World" webserver
+# Install webserver and configure "Hello World" web page
 Install-WindowsFeature -name Web-Server -IncludeManagementTools
 remove-item 'C:\inetpub\wwwroot\iisstart.htm'
 Add-Content -Path 'C:\inetpub\wwwroot\iisstart.htm' `
 	-Value $('Hello World from ' + $env:computername)
-
-
-Set-Content -Path "$HOME\Desktop\hello2.txt" -Value "part two"
