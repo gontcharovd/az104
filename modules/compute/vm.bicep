@@ -67,7 +67,7 @@ resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01
       fileUris: [
         uri(parVmExtensionFilePath, parVmExtensionFileName)
       ]
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${parVmExtensionFileName}'
+      commandToExecute: 'powershell.exe -File ${parVmExtensionFileName}'
     }
   }
 }
