@@ -6,16 +6,15 @@ param parVirtualNetworkName string
 param parVmName string
 param parVmSize string = 'Standard_B1ms'
 param parEnableIpForwarding bool = false
-@description('Virtual machine extension files are stored in a public GitHub repo.')
-param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param parVmExtensionFileName string = ''
 param parAdminUsername string
 @secure()
 param parAdminPassword string
 param parLoadBalancerName string = ''
 param parLoadBalancerBackendPoolName string = ''
+param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
+param parVmExtensionFileName string = ''
 
-resource resVm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
+resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: parVmName
   location: parLocation
   properties: {
@@ -55,20 +54,20 @@ resource resVm 'Microsoft.Compute/virtualMachines@2018-06-01' = {
   }
 }
 
-resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2018-06-01' = if (!empty(parVmExtensionFileName)) {
+resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = if (!empty(parVmExtensionFileName)) {
   parent: resVm
   name: '${parVmName}-customScriptExtension'
   location: parLocation
   properties: {
     publisher: 'Microsoft.Compute'
     type: 'CustomScriptExtension'
-    typeHandlerVersion: '1.7'
+    typeHandlerVersion: '1.8'
     autoUpgradeMinorVersion: true
     settings: {
       fileUris: [
         uri(parVmExtensionFilePath, parVmExtensionFileName)
       ]
-      commandToExecute: 'powershell -ExecutionPolicy Unrestricted -File ${parVmExtensionFileName}'
+      commandToExecute: 'powershell.exe -File ${parVmExtensionFileName}'
     }
   }
 }
@@ -82,6 +81,9 @@ resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
       {
         name: '${parVmName}-ipconfig'
         properties: {
+          publicIPAddress: {
+            id: resPublicIPAddress.id
+          }
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, parSubnetName)
           }
@@ -100,7 +102,7 @@ resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
   }
 }
 
-resource resNsg 'Microsoft.Network/networkSecurityGroups@2018-08-01' = {
+resource resNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
   name: parNsgName
   location: parLocation
   properties: {
