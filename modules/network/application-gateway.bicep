@@ -47,7 +47,7 @@ resource resApplicationGateway 'Microsoft.Network/applicationGateways@2023-04-01
         name: parApplicationGatewayFrontendIpConfigName
         properties: {
           publicIPAddress: {
-            id: resApplicationGatewayPublicIP.id
+            id: resourceId('Microsoft.Network/publicIPAddresses', parApplicationGatewayPublicIpName)
           }
         }
       }
