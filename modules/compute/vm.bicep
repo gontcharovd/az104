@@ -81,9 +81,6 @@ resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
       {
         name: '${parVmName}-ipconfig'
         properties: {
-          publicIPAddress: {
-            id: resPublicIPAddress.id
-          }
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, parSubnetName)
           }
