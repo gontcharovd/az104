@@ -12,42 +12,27 @@ resource resApplicationGateway 'Microsoft.Network/applicationGateways@2023-04-01
   name: parApplicationGatewayName
   location: parLocation
   properties: {
-    // Disable autoscaling
-    autoscaleConfiguration: {
-      maxCapacity: 2
-      minCapacity: 2
+    sku: {
+      name: 'Standard_v2'
+      tier: 'Standard_v2'
     }
-    backendAddressPools: [
+    gatewayIPConfigurations: [
       {
+        name: 'appGatewayIpConfig'
         properties: {
-          backendAddresses: [
-            {
-              ipAddress: '10.62.0.4'
-            }
-            {
-              ipAddress: '10.63.0.4'
-            }
-          ]
+          subnet: {
+            id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, 'subnet-appgw')
+          }
         }
       }
     ]
-    backendSettingsCollection: [
-      {
-        name: parApplicationGatewayBackendSettingsName
-        properties: {
-          port: 80
-          protocol: 'Http'
-          timeout: 20
-        }
-      }
-    ]
-    enableHttp2: false
     frontendIPConfigurations: [
       {
         name: parApplicationGatewayFrontendIpConfigName
         properties: {
+          privateIPAllocationMethod: 'Dynamic'
           publicIPAddress: {
-            id: resourceId('Microsoft.Network/publicIPAddresses', parApplicationGatewayPublicIpName)
+            id: resApplicationGatewayPublicIp.id
           }
         }
       }
@@ -60,13 +45,32 @@ resource resApplicationGateway 'Microsoft.Network/applicationGateways@2023-04-01
         }
       }
     ]
-    gatewayIPConfigurations: [
+    backendAddressPools: [
       {
-        name: 'appGatewayIpConfig'
+        name: parApplicationGatewayBackendPoolName
         properties: {
-          subnet: {
-            id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, 'subnet-appgw')
-          }
+          backendAddresses: [
+            {
+              // az104-06-vm2
+              ipAddress: '10.62.0.4'
+            }
+            {
+              // az104-06-vm3
+              ipAddress: '10.63.0.4'
+            }
+          ]
+        }
+      }
+    ]
+    backendHttpSettingsCollection: [
+      {
+        name: parApplicationGatewayBackendSettingsName
+        properties: {
+          port: 80
+          protocol: 'Http'
+          cookieBasedAffinity: 'Disabled'
+          pickHostNameFromBackendAddress: false
+          requestTimeout: 20
         }
       }
     ]
@@ -81,6 +85,7 @@ resource resApplicationGateway 'Microsoft.Network/applicationGateways@2023-04-01
             id: resourceId('Microsoft.Network/applicationGateways/frontendPorts', parApplicationGatewayName, 'port_80')
           }
           protocol: 'Http'
+          requireServerNameIndication: false
         }
       }
     ]
@@ -88,23 +93,24 @@ resource resApplicationGateway 'Microsoft.Network/applicationGateways@2023-04-01
       {
         name: parApplicationGatewayRoutingRuleName
         properties: {
+          ruleType: 'Basic'
           priority: 1
           backendAddressPool: {
-            id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', parApplicationGateWayName, parApplicationGatewayBackendPoolName)
+            id: resourceId('Microsoft.Network/applicationGateways/backendAddressPools', parApplicationGatewayName, parApplicationGatewayBackendPoolName)
           }
           backendHttpSettings: {
-            id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', parApplicationGateWayName, parApplicationGatewayBackendSettingsName)
+            id: resourceId('Microsoft.Network/applicationGateways/backendHttpSettingsCollection', parApplicationGatewayName, parApplicationGatewayBackendSettingsName)
           }
           httpListener: {
-            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', parApplicationGateWayName, parApplicationGatewayListenerName)
+            id: resourceId('Microsoft.Network/applicationGateways/httpListeners', parApplicationGatewayName, parApplicationGatewayListenerName)
           }
-          ruleType: 'Basic'
         }
       }
     ]
-    sku: {
-      name: 'Standard_v2'
-      tier: 'Standard_v2'
+    enableHttp2: false
+    autoscaleConfiguration: {
+      minCapacity: 0
+      maxCapacity: 2
     }
   }
 }
