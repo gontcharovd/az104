@@ -1,18 +1,18 @@
+@secure()
+param parAdminPassword string
+param parAdminUsername string
+param parEnableIpForwarding bool = false
+param parLoadBalancerBackendPoolName string = ''
+param parLoadBalancerName string = ''
 param parLocation string
 param parNicName string
 param parNsgName string
 param parSubnetName string
 param parVirtualNetworkName string
 param parVmName string
-param parVmSize string = 'Standard_B1ms'
-param parEnableIpForwarding bool = false
-param parAdminUsername string
-@secure()
-param parAdminPassword string
-param parLoadBalancerName string = ''
-param parLoadBalancerBackendPoolName string = ''
-param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param parVmExtensionFileName string = 'configure-vm.ps1'
+
+var varVmExtensionFileName = 'configure-vm.ps1'
+var varVmExtensionFilePath = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
 
 resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: parVmName
@@ -27,7 +27,7 @@ resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
       }
     }
     hardwareProfile: {
-      vmSize: parVmSize
+      vmSize: 'Standard_B1ms'
     }
     storageProfile: {
       imageReference: {
@@ -65,9 +65,9 @@ resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01
     autoUpgradeMinorVersion: true
     settings: {
       fileUris: [
-        uri(parVmExtensionFilePath, parVmExtensionFileName)
+        uri(varVmExtensionFilePath, varVmExtensionFileName)
       ]
-      commandToExecute: 'powershell.exe -File ${parVmExtensionFileName}'
+      commandToExecute: 'powershell.exe -File ${varVmExtensionFileName}'
     }
   }
 }

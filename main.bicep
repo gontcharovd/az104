@@ -1,29 +1,44 @@
 targetScope = 'subscription'
 
-param parLocation string = 'westeurope'
-param parVnet1Name string = 'az104-06-vnet01'
-param parVnet2Name string = 'az104-06-vnet2'
-param parVnet3Name string = 'az104-06-vnet3'
-param parVnet1Address string = '10.60.0.0/22'
-param parVnet2Address string = '10.62.0.0/22'
-param parVnet3Address string = '10.63.0.0/22'
-param parVm0Name string = 'az104-06-vm0'
-param parVm0NicName string = 'az104-06-vm0-nic'
-param parVm0NsgName string = 'az104-06-vm0-nsg'
-param parVm1Name string = 'az104-06-vm1'
-param parVm1NicName string = 'az104-06-vm1-nic'
-param parVm1NsgName string = 'az104-06-vm1-nsg'
-param parVm2Name string = 'az104-06-vm2'
-param parVm2NicName string = 'az104-06-vm2-nic'
-param parVm2NsgName string = 'az104-06-vm2-nsg'
-param parVm3Name string = 'az104-06-vm3'
-param parVm3NicName string = 'az104-06-vm3-nic'
-param parVm3NsgName string = 'az104-06-vm3-nsg'
-param parAdminUsername string = 'az104Admin'
+param parLocation string
+// virtual network
+param parVnet1Name string
+param parVnet2Name string
+param parVnet3Name string
+param parVnet1Address string
+param parVnet2Address string
+param parVnet3Address string
+// virtual machine
+param parVm0Name string
+param parVm0NicName string
+param parVm0NsgName string
+param parVm1Name string
+param parVm1NicName string
+param parVm1NsgName string
+param parVm2Name string
+param parVm2NicName string
+param parVm2NsgName string
+param parVm3Name string
+param parVm3NicName string
+param parVm3NsgName string
+param parAdminUsername string
 @secure()
 param parAdminPassword string
-param parLoadBalancerName string = 'az104-06-lb4'
-param parApplicationGatewayName string = 'az104-06-appgw5'
+// public load balancer
+param parLoadBalancerName string
+param parLoadBalancerBackendPoolName string
+param parLoadBalancerPublicIpName string
+param parLoadBalancerFrontendIpConfigName string
+param parLoadBalancingRuleName string
+param parLoadBalancerHealthProbeName string
+// application gateway
+param parApplicationGatewayName string
+param parApplicationGatewayPublicIpName string
+param parApplicationGatewayFrontendIpConfigName string
+param parApplicationGatewayBackendPoolName string
+param parApplicationGatewayRoutingRuleName string
+param parApplicationGatewayListenerName string
+param parApplicationGatewayBackendSettingsName string
 
 resource resRg1 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'az104-06-rg1'
@@ -40,85 +55,85 @@ resource resRg3 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: parLocation
 }
 
-module modVnet1 './modules/network/vnet-hub.bicep' = {
+module modVnet1 './modules/vnet-hub.bicep' = {
   name: 'vnet1'
   scope: resRg1
   params: {
-    parVnetName: parVnet1Name
-    parLocation: parLocation
     parAddressPrefix: parVnet1Address
+    parLocation: parLocation
     parSubnetNames: ['subnet0', 'subnet1', 'subnet-appgw']
     parSubnetPrefixes: ['10.60.0.0/24', '10.60.1.0/24', '10.60.3.224/27']
+    parVnetName: parVnet1Name
   }
 }
 
-module modVnet2 './modules/network/vnet-spoke.bicep' = {
+module modVnet2 './modules/vnet-spoke.bicep' = {
   name: 'vnet2'
   scope: resRg2
   params: {
-    parVnetName: parVnet2Name
-    parLocation: parLocation
     parAddressPrefix: parVnet2Address
+    parLocation: parLocation
+    parRouteTableId: modVnet2RouteTable.outputs.outRouteTableId
     parSubnetName: 'subnet0'
     parSubnetPrefix: '10.62.0.0/24'
-    parRouteTableId: modVnet2RouteTable.outputs.outRouteTableId
+    parVnetName: parVnet2Name
   }
 }
 
-module modVnet3 './modules/network/vnet-spoke.bicep' = {
+module modVnet3 './modules/vnet-spoke.bicep' = {
   name: 'vnet3'
   scope: resRg3
   params: {
-    parVnetName: parVnet3Name
-    parLocation: parLocation
     parAddressPrefix: parVnet3Address
+    parLocation: parLocation
+    parRouteTableId: modVnet3RouteTable.outputs.outRouteTableId
     parSubnetName: 'subnet0'
     parSubnetPrefix: '10.63.0.0/24'
-    parRouteTableId: modVnet3RouteTable.outputs.outRouteTableId
+    parVnetName: parVnet3Name
   }
 }
 
-module modPeer12 './modules/network/peering.bicep' = {
+module modPeer12 './modules/peering.bicep' = {
   name: 'peer12'
   scope: resRg1
   params: {
-    parSourceVnetName: modVnet1.outputs.outVnetName
-    parDestinationVnetName: modVnet2.outputs.outVnetName
     parDestinationVnetId: modVnet2.outputs.outVnetId
+    parDestinationVnetName: modVnet2.outputs.outVnetName
+    parSourceVnetName: modVnet1.outputs.outVnetName
   }
 }
 
-module modPeer21 './modules/network/peering.bicep' = {
+module modPeer21 './modules/peering.bicep' = {
   name: 'peer21'
   scope: resRg2
   params: {
-    parSourceVnetName: modVnet2.outputs.outVnetName
-    parDestinationVnetName: modVnet1.outputs.outVnetName
     parDestinationVnetId: modVnet1.outputs.outVnetId
+    parDestinationVnetName: modVnet1.outputs.outVnetName
+    parSourceVnetName: modVnet2.outputs.outVnetName
   }
 }
 
-module modPeer13 './modules/network/peering.bicep' = {
+module modPeer13 './modules/peering.bicep' = {
   name: 'peer13'
   scope: resRg1
   params: {
-    parSourceVnetName: modVnet1.outputs.outVnetName
-    parDestinationVnetName: modVnet3.outputs.outVnetName
     parDestinationVnetId: modVnet3.outputs.outVnetId
+    parDestinationVnetName: modVnet3.outputs.outVnetName
+    parSourceVnetName: modVnet1.outputs.outVnetName
   }
 }
 
-module modPeer31 './modules/network/peering.bicep' = {
+module modPeer31 './modules/peering.bicep' = {
   name: 'peer31'
   scope: resRg3
   params: {
-    parSourceVnetName: modVnet3.outputs.outVnetName
-    parDestinationVnetName: modVnet1.outputs.outVnetName
     parDestinationVnetId: modVnet1.outputs.outVnetId
+    parDestinationVnetName: modVnet1.outputs.outVnetName
+    parSourceVnetName: modVnet3.outputs.outVnetName
   }
 }
 
-module modVm0 './modules/compute/vm.bicep' = {
+module modVm0 './modules/vm.bicep' = {
   name: 'vm0'
   scope: resRg1
   params: {
@@ -136,57 +151,56 @@ module modVm0 './modules/compute/vm.bicep' = {
   }
 }
 
-module modVm1 './modules/compute/vm.bicep' = {
+module modVm1 './modules/vm.bicep' = {
   name: 'vm1'
   scope: resRg1
   params: {
-    parLocation: parLocation
-    parAdminUsername: parAdminUsername
     parAdminPassword: parAdminPassword
+    parAdminUsername: parAdminUsername
+    parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
+    parLocation: parLocation
     parNicName: parVm1NicName
     parNsgName: parVm1NsgName
-    parVirtualNetworkName: modVnet1.outputs.outVnetName
     parSubnetName: 'subnet1'
+    parVirtualNetworkName: modVnet1.outputs.outVnetName
     parVmName: parVm1Name
-    parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
 
-module modVm2 './modules/compute/vm.bicep' = {
+module modVm2 './modules/vm.bicep' = {
   name: 'vm2'
   scope: resRg2
   params: {
-    parLocation: parLocation
-    parAdminUsername: parAdminUsername
     parAdminPassword: parAdminPassword
+    parAdminUsername: parAdminUsername
+    parLocation: parLocation
     parNicName: parVm2NicName
     parNsgName: parVm2NsgName
-    parVirtualNetworkName: modVnet2.outputs.outVnetName
     parSubnetName: 'subnet0'
+    parVirtualNetworkName: modVnet2.outputs.outVnetName
     parVmName: parVm2Name
   }
 }
 
-module modVm3 './modules/compute/vm.bicep' = {
+module modVm3 './modules/vm.bicep' = {
   name: 'vm3'
   scope: resRg3
   params: {
-    parLocation: parLocation
-    parAdminUsername: parAdminUsername
     parAdminPassword: parAdminPassword
+    parAdminUsername: parAdminUsername
+    parLocation: parLocation
     parNicName: parVm3NicName
     parNsgName: parVm3NsgName
-    parVirtualNetworkName: modVnet3.outputs.outVnetName
     parSubnetName: 'subnet0'
+    parVirtualNetworkName: modVnet3.outputs.outVnetName
     parVmName: parVm3Name
   }
 }
 
-module modVnet2RouteTable './modules/network/route-table.bicep' = {
+module modVnet2RouteTable './modules/route-table.bicep' = {
   name: 'vm2RouteTable'
   scope: resRg2
   params: {
-    parRouteTableName: 'vm2RouteTable'
     parLocation: parLocation
     parRoute: {
       name: 'routeVm2ToVm3'
@@ -194,14 +208,14 @@ module modVnet2RouteTable './modules/network/route-table.bicep' = {
       nextHopIpAddress: '10.60.0.4'
       nextHopType: 'VirtualAppliance'
     }
+    parRouteTableName: 'vm2RouteTable'
   }
 }
 
-module modVnet3RouteTable './modules/network/route-table.bicep' = {
+module modVnet3RouteTable './modules/route-table.bicep' = {
   name: 'vm3RouteTable'
   scope: resRg3
   params: {
-    parRouteTableName: 'vm3RouteTable'
     parLocation: parLocation
     parRoute: {
       name: 'routeVm3ToVm2'
@@ -209,23 +223,35 @@ module modVnet3RouteTable './modules/network/route-table.bicep' = {
       nextHopIpAddress: '10.60.0.4'
       nextHopType: 'VirtualAppliance'
     }
+    parRouteTableName: 'vm3RouteTable'
   }
 }
 
-module modPublicLoadBalancer './modules/network/load-balancer.bicep' = {
+module modPublicLoadBalancer './modules/load-balancer.bicep' = {
   name: 'publicLoadBalancer'
   scope: resRg1
   params: {
+    parLoadBalancerBackendPoolName: parLoadBalancerBackendPoolName
+    parLoadBalancerFrontendIpConfigName: parLoadBalancerFrontendIpConfigName
+    parLoadBalancerHealthProbeName: parLoadBalancerHealthProbeName
     parLoadBalancerName: parLoadBalancerName
+    parLoadBalancerPublicIpName: parLoadBalancerPublicIpName
+    parLoadBalancingRuleName: parLoadBalancingRuleName
     parLocation: parLocation
   }
 }
 
-module modApplicationGateway './modules/network/application-gateway.bicep' = {
+module modApplicationGateway './modules/application-gateway.bicep' = {
   name: 'applicationGateway'
   scope: resRg1
   params: {
+    parApplicationGatewayBackendPoolName: parApplicationGatewayBackendPoolName
+    parApplicationGatewayBackendSettingsName: parApplicationGatewayBackendSettingsName
+    parApplicationGatewayFrontendIpConfigName: parApplicationGatewayFrontendIpConfigName
+    parApplicationGatewayListenerName: parApplicationGatewayListenerName
     parApplicationGatewayName: parApplicationGatewayName
+    parApplicationGatewayPublicIpName: parApplicationGatewayPublicIpName
+    parApplicationGatewayRoutingRuleName: parApplicationGatewayRoutingRuleName
     parLocation: parLocation
     parVirtualNetworkName: modVnet1.outputs.outVnetName
   }

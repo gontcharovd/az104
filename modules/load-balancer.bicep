@@ -1,10 +1,10 @@
+param parLoadBalancerBackendPoolName string
+param parLoadBalancerFrontendIpConfigName string
+param parLoadBalancerHealthProbeName string
 param parLoadBalancerName string
+param parLoadBalancerPublicIpName string
+param parLoadBalancingRuleName string
 param parLocation string
-param parLoadBalancerBackendPoolName string = 'az104-06-lb4-be1'
-param parLoadBalancerPublicIpName string = 'az104-06-pip4'
-param parLoadBalancerFrontendIpConfigName string = 'az104-06-pip4'
-param parLoadBalancingRuleName string = 'az104-06-lb4-lbrule1'
-param parLoadBalancerHealthProbeName string = 'az104-06-lb4-hp1'
 
 resource resLoadBalancer 'Microsoft.Network/loadBalancers@2023-04-01' = {
   name: parLoadBalancerName

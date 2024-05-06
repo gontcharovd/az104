@@ -1,0 +1,105 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "parLocation": {
+      "value": "westeurope"
+    },
+    "parVnet1Name": {
+      "value": "az104-06-vnet01"
+    },
+    "parVnet2Name": {
+      "value": "az104-06-vnet2"
+    },
+    "parVnet3Name": {
+      "value": "az104-06-vnet3"
+    },
+    "parVnet1Address": {
+      "value": "10.60.0.0/22"
+    },
+    "parVnet2Address": {
+      "value": "10.62.0.0/22"
+    },
+    "parVnet3Address": {
+      "value": "10.63.0.0/22"
+    },
+    "parVm0Name": {
+      "value": "az104-06-vm0"
+    },
+    "parVm0NicName": {
+      "value": "az104-06-vm0-nic"
+    },
+    "parVm0NsgName": {
+      "value": "az104-06-vm0-nsg"
+    },
+    "parVm1Name": {
+      "value": "az104-06-vm1"
+    },
+    "parVm1NicName": {
+      "value": "az104-06-vm1-nic"
+    },
+    "parVm1NsgName": {
+      "value": "az104-06-vm1-nsg"
+    },
+    "parVm2Name": {
+      "value": "az104-06-vm2"
+    },
+    "parVm2NicName": {
+      "value": "az104-06-vm2-nic"
+    },
+    "parVm2NsgName": {
+      "value": "az104-06-vm2-nsg"
+    },
+    "parVm3Name": {
+      "value": "az104-06-vm3"
+    },
+    "parVm3NicName": {
+      "value": "az104-06-vm3-nic"
+    },
+    "parVm3NsgName": {
+      "value": "az104-06-vm3-nsg"
+    },
+    "parAdminUsername": {
+      "value": "az104Admin"
+    },
+    "parLoadBalancerName": {
+      "value": "az104-06-lb4"
+    },
+    "parLoadBalancerBackendPoolName": {
+      "value": "az104-06-lb4-be1"
+    },
+    "parLoadBalancerPublicIpName": {
+      "value": "az104-06-pip4"
+    },
+    "parLoadBalancerFrontendIpConfigName": {
+      "value": "az104-06-pip4"
+    },
+    "parLoadBalancingRuleName": {
+      "value": "az104-06-lb4-lbrule1"
+    },
+    "parLoadBalancerHealthProbeName": {
+      "value": "az104-06-lb4-hp1"
+    },
+    "parApplicationGatewayName": {
+      "value": "az104-06-appgw5"
+    },
+    "parApplicationGatewayPublicIpName": {
+      "value": "az104-06-pip5"
+    },
+    "parApplicationGatewayFrontendIpConfigName": {
+      "value": "az104-06-pip5"
+    },
+    "parApplicationGatewayBackendPoolName": {
+      "value": "az104-06-appgw5-be1"
+    },
+    "parApplicationGatewayRoutingRuleName": {
+      "value": "az104-06-appgw5-rl1"
+    },
+    "parApplicationGatewayListenerName": {
+      "value": "az104-06-appgw5-rl1l1"
+    },
+    "parApplicationGatewayBackendSettingsName": {
+      "value": "az104-06-appgw5-http1"
+    }
+  }
+}

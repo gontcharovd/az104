@@ -1,9 +1,9 @@
-param parVnetName string 
 param parAddressPrefix string 
 param parLocation string
+param parRouteTableId string
 param parSubnetName string
 param parSubnetPrefix string
-param parRouteTableId string
+param parVnetName string 
 
 resource resVnetSpoke 'microsoft.network/virtualnetworks@2021-05-01' = {
   name: parVnetName

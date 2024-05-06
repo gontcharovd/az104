@@ -1,8 +1,8 @@
-param parVnetName string 
 param parAddressPrefix string 
 param parLocation string
 param parSubnetNames array
 param parSubnetPrefixes array
+param parVnetName string 
 
 resource resVnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
   name: parVnetName

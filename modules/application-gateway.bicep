@@ -1,12 +1,12 @@
+param parApplicationGatewayBackendPoolName string
+param parApplicationGatewayBackendSettingsName string
+param parApplicationGatewayFrontendIpConfigName string
+param parApplicationGatewayListenerName string
 param parApplicationGatewayName string
+param parApplicationGatewayPublicIpName string
+param parApplicationGatewayRoutingRuleName string
 param parLocation string
 param parVirtualNetworkName string
-param parApplicationGatewayPublicIpName string = 'az104-06-pip5'
-param parApplicationGatewayFrontendIpConfigName string = 'az104-06-pip5'
-param parApplicationGatewayBackendPoolName string = 'az104-06-appgw5-be1'
-param parApplicationGatewayRoutingRuleName string = 'az104-06-appgw5-rl1'
-param parApplicationGatewayListenerName string = 'az104-06-appgw5-rl1l1'
-param parApplicationGatewayBackendSettingsName string = 'az104-06-appgw5-http1'
 
 resource resApplicationGateway 'Microsoft.Network/applicationGateways@2023-04-01' = {
   name: parApplicationGatewayName

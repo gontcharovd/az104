@@ -1,6 +1,6 @@
-param parRouteTableName string
 param parLocation string
 param parRoute object
+param parRouteTableName string
 
 resource resRouteTable 'Microsoft.Network/routeTables@2023-04-01' = {
   name: parRouteTableName
