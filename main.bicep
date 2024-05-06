@@ -8,6 +8,9 @@ param parVnet3Name string
 param parVnet1Address string
 param parVnet2Address string
 param parVnet3Address string
+// route table
+param parRouteTableVnet2Name string = 'az104-06-rt23'
+param parRouteTableVnet3Name string = 'az104-06-rt32'
 // virtual machine
 param parVm0Name string
 param parVm0NicName string
@@ -133,7 +136,7 @@ module modPeer31 './modules/peering.bicep' = {
   }
 }
 
-module modVm0 './modules/vm.bicep' = {
+module modVm0 './modules/virtual-machine.bicep' = {
   name: 'vm0'
   scope: resRg1
   params: {
@@ -151,7 +154,7 @@ module modVm0 './modules/vm.bicep' = {
   }
 }
 
-module modVm1 './modules/vm.bicep' = {
+module modVm1 './modules/virtual-machine.bicep' = {
   name: 'vm1'
   scope: resRg1
   params: {
@@ -167,7 +170,7 @@ module modVm1 './modules/vm.bicep' = {
   }
 }
 
-module modVm2 './modules/vm.bicep' = {
+module modVm2 './modules/virtual-machine.bicep' = {
   name: 'vm2'
   scope: resRg2
   params: {
@@ -182,7 +185,7 @@ module modVm2 './modules/vm.bicep' = {
   }
 }
 
-module modVm3 './modules/vm.bicep' = {
+module modVm3 './modules/virtual-machine.bicep' = {
   name: 'vm3'
   scope: resRg3
   params: {
@@ -203,7 +206,7 @@ module modVnet2RouteTable './modules/route-table.bicep' = {
   params: {
     parLocation: parLocation
     parRoute: {
-      name: 'routeVm2ToVm3'
+      name: parRouteTableVnet2Name
       addressPrefix: '10.63.0.0/16'
       nextHopIpAddress: '10.60.0.4'
       nextHopType: 'VirtualAppliance'
@@ -218,7 +221,7 @@ module modVnet3RouteTable './modules/route-table.bicep' = {
   params: {
     parLocation: parLocation
     parRoute: {
-      name: 'routeVm3ToVm2'
+      name: parRouteTableVnet3Name
       addressPrefix: '10.62.0.0/16'
       nextHopIpAddress: '10.60.0.4'
       nextHopType: 'VirtualAppliance'
