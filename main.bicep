@@ -23,6 +23,7 @@ param parAdminUsername string = 'az104Admin'
 @secure()
 param parAdminPassword string
 param parLoadBalancerName string = 'az104-06-lb4'
+param parApplicationGatewayName string = 'az104-06-appgw5'
 
 resource resRg1 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   name: 'az104-06-rg1'
@@ -46,8 +47,8 @@ module modVnet1 './modules/network/vnet-hub.bicep' = {
     parVnetName: parVnet1Name
     parLocation: parLocation
     parAddressPrefix: parVnet1Address
-    parSubnetNames: ['subnet0', 'subnet1']
-    parSubnetPrefixes: ['10.60.0.0/24', '10.60.1.0/24']
+    parSubnetNames: ['subnet0', 'subnet1', 'subnet-appgw']
+    parSubnetPrefixes: ['10.60.0.0/24', '10.60.1.0/24', '10.60.3.224/27']
   }
 }
 
@@ -130,7 +131,6 @@ module modVm0 './modules/compute/vm.bicep' = {
     parSubnetName: 'subnet0'
     parVmName: parVm0Name
     parEnableIpForwarding: true
-    parVmExtensionFileName: 'configure-vm.ps1'
     parLoadBalancerName: modPublicLoadBalancer.outputs.outLoadBalancerName
     parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
@@ -148,7 +148,6 @@ module modVm1 './modules/compute/vm.bicep' = {
     parVirtualNetworkName: modVnet1.outputs.outVnetName
     parSubnetName: 'subnet1'
     parVmName: parVm1Name
-    parVmExtensionFileName: 'configure-vm.ps1'
     parLoadBalancerBackendPoolName: modPublicLoadBalancer.outputs.outLoadBalancerBackendPoolName
   }
 }
@@ -219,5 +218,15 @@ module modPublicLoadBalancer './modules/network/load-balancer.bicep' = {
   params: {
     parLoadBalancerName: parLoadBalancerName
     parLocation: parLocation
+  }
+}
+
+module modApplicationGateway './modules/network/application-gateway.bicep' = {
+  name: 'applicationGateway'
+  scope: resRg1
+  params: {
+    parApplicationGatewayName: parApplicationGatewayName
+    parLocation: parLocation
+    parVirtualNetworkName: modVnet1.outputs.outVnetName
   }
 }

@@ -12,7 +12,7 @@ param parAdminPassword string
 param parLoadBalancerName string = ''
 param parLoadBalancerBackendPoolName string = ''
 param parVmExtensionFilePath string = 'https://raw.githubusercontent.com/gontcharovd/az104/main/src/'
-param parVmExtensionFileName string = ''
+param parVmExtensionFileName string = 'configure-vm.ps1'
 
 resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   name: parVmName
@@ -54,7 +54,7 @@ resource resVm 'Microsoft.Compute/virtualMachines@2023-09-01' = {
   }
 }
 
-resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = if (!empty(parVmExtensionFileName)) {
+resource parVmExtension 'Microsoft.Compute/virtualMachines/extensions@2023-09-01' = {
   parent: resVm
   name: '${parVmName}-customScriptExtension'
   location: parLocation
@@ -81,9 +81,6 @@ resource resNic 'Microsoft.Network/networkInterfaces@2023-04-01' = {
       {
         name: '${parVmName}-ipconfig'
         properties: {
-          publicIPAddress: {
-            id: resPublicIPAddress.id
-          }
           subnet: {
             id: resourceId('Microsoft.Network/virtualNetworks/subnets', parVirtualNetworkName, parSubnetName)
           }
