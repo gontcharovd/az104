@@ -1,10 +1,12 @@
 param parAddressPrefix string 
 param parLocation string
+// Default to empty, indicating no route table
+param parRouteTableId string = ''
 param parSubnetNames array
 param parSubnetPrefixes array
 param parVnetName string 
 
-resource resVnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
+resource resVnetHub 'microsoft.network/virtualnetworks@2023-04-01' = {
   name: parVnetName
   location: parLocation
   properties: {
@@ -14,11 +16,13 @@ resource resVnetHub 'microsoft.network/virtualnetworks@2021-05-01' = {
       ]
     }
     subnets: [
-      // hub subnets have no routing table
       for (subnetName, index) in parSubnetNames: {
         name: subnetName
         properties: {
           addressPrefix: parSubnetPrefixes[index]
+          routeTable: (parRouteTableId != '') ? {
+            id: parRouteTableId
+          } : null
         }
       }
     ]

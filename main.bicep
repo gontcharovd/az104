@@ -55,7 +55,7 @@ resource resRg3 'Microsoft.Resources/resourceGroups@2022-09-01' = {
   location: parLocation
 }
 
-module modVnet1 './modules/vnet-hub.bicep' = {
+module modVnet1 './modules/virtual-network.bicep' = {
   name: 'vnet1'
   scope: resRg1
   params: {
@@ -67,28 +67,28 @@ module modVnet1 './modules/vnet-hub.bicep' = {
   }
 }
 
-module modVnet2 './modules/vnet-spoke.bicep' = {
+module modVnet2 './modules/virtual-network.bicep' = {
   name: 'vnet2'
   scope: resRg2
   params: {
     parAddressPrefix: parVnet2Address
     parLocation: parLocation
     parRouteTableId: modVnet2RouteTable.outputs.outRouteTableId
-    parSubnetName: 'subnet0'
-    parSubnetPrefix: '10.62.0.0/24'
+    parSubnetNames: ['subnet0']
+    parSubnetPrefixes: ['10.62.0.0/24']
     parVnetName: parVnet2Name
   }
 }
 
-module modVnet3 './modules/vnet-spoke.bicep' = {
+module modVnet3 './modules/virtual-network.bicep' = {
   name: 'vnet3'
   scope: resRg3
   params: {
     parAddressPrefix: parVnet3Address
     parLocation: parLocation
     parRouteTableId: modVnet3RouteTable.outputs.outRouteTableId
-    parSubnetName: 'subnet0'
-    parSubnetPrefix: '10.63.0.0/24'
+    parSubnetNames: ['subnet0']
+    parSubnetPrefixes: ['10.63.0.0/24']
     parVnetName: parVnet3Name
   }
 }
