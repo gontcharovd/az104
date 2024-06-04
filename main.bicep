@@ -9,8 +9,8 @@ param parVnet1Address string
 param parVnet2Address string
 param parVnet3Address string
 // route table
-param parRouteTableVnet2Name string = 'az104-06-rt23'
-param parRouteTableVnet3Name string = 'az104-06-rt32'
+param parRouteTableVnet2Name string
+param parRouteTableVnet3Name string
 // virtual machine
 param parVm0Name string
 param parVm0NicName string
@@ -208,10 +208,11 @@ module modVnet2RouteTable './modules/route-table.bicep' = {
     parRoute: {
       name: parRouteTableVnet2Name
       addressPrefix: '10.63.0.0/16'
-      nextHopIpAddress: '10.60.0.4'
+      // nextHopIpAddress: '10.60.0.4'
+      nextHopIpAddress: modVm0.outputs.outPrivateIpAddress
       nextHopType: 'VirtualAppliance'
     }
-    parRouteTableName: 'vm2RouteTable'
+    parRouteTableName: parRouteTableVnet2Name
   }
 }
 
@@ -223,10 +224,11 @@ module modVnet3RouteTable './modules/route-table.bicep' = {
     parRoute: {
       name: parRouteTableVnet3Name
       addressPrefix: '10.62.0.0/16'
-      nextHopIpAddress: '10.60.0.4'
+      // nextHopIpAddress: '10.60.0.4'
+      nextHopIpAddress: modVm0.outputs.outPrivateIpAddress
       nextHopType: 'VirtualAppliance'
     }
-    parRouteTableName: 'vm3RouteTable'
+    parRouteTableName: parRouteTableVnet3Name
   }
 }
 

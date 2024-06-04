@@ -133,3 +133,5 @@ resource resNsg 'Microsoft.Network/networkSecurityGroups@2023-04-01' = {
     ]
   }
 }
+
+output outPrivateIpAddress string = resNic.properties.ipConfigurations[0].properties.privateIPAddress

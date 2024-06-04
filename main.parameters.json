@@ -23,6 +23,12 @@
     "parVnet3Address": {
       "value": "10.63.0.0/22"
     },
+    "parRouteTableVnet2Name": {
+      "value": "az104-06-rt23"
+    },
+    "parRouteTableVnet3Name": {
+      "value": "az104-06-rt32"
+    },
     "parVm0Name": {
       "value": "az104-06-vm0"
     },
@@ -61,6 +67,9 @@
     },
     "parAdminUsername": {
       "value": "az104Admin"
+    },
+    "parAdminPassword": {
+      "value": "Ch@ng3Me!123"
     },
     "parLoadBalancerName": {
       "value": "az104-06-lb4"
